@@ -40,12 +40,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# product skill — local only, cloners get first-time onboarding
-PRODUCT_KNOWLEDGE.md
-
-# task history — local only, not for cloners
-.claude/tasks/*.md
-!.claude/tasks/TASKS.md
-.claude/tasks/goals/*.md
+# task history — pointer file only, not meaningful on its own
 .claude/tasks/.current-task
 
