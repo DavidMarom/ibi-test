@@ -1,5 +1,4 @@
 export { Navbar } from "./Navbar/Navbar";
-export { CodeBlock } from "./CodeBlock/CodeBlock";
 export { Features } from "./Features/Features";
 export { FeatureCard } from "./FeatureCard/FeatureCard";
 export { Footer } from "./Footer/Footer";
