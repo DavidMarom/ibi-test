@@ -152,6 +152,31 @@
   font-weight: 400;
   color: var(--color-error);
   margin: 0;
+  animation: bustShake 500ms ease;
+}
+
+@keyframes bustShake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(calc(var(--space-1) * -1));
+  }
+  40% {
+    transform: translateX(var(--space-1));
+  }
+  60% {
+    transform: translateX(calc(var(--space-1) * -0.75));
+  }
+  80% {
+    transform: translateX(calc(var(--space-1) * 0.75));
+  }
+}
+
+.bustPause {
+  width: 100%;
+  min-height: 44px;
 }
 
 .errorText {
@@ -318,6 +343,9 @@
 
 @media (prefers-reduced-motion: reduce) {
   .spinner {
+    animation: none;
+  }
+  .bustText {
     animation: none;
   }
   .newGameSecondary,

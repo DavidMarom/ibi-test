@@ -5,4 +5,4 @@ export interface GameBoardProps {
   player2: AuthedPlayer;
 }
 
-export type PendingAction = "setup" | "reset" | "roll" | "hold" | "ai" | null;
+export type PendingAction = "setup" | "reset" | "roll" | "hold" | "ai" | "bust" | null;

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { GameBoard, PlayerSignIn } from "@/components";
+import { GameBoard, PlayerSignIn, SoundToggle } from "@/components";
 import type { AuthedPlayer } from "@/types/player";
 
 export default function HomePage() {
@@ -10,6 +10,7 @@ export default function HomePage() {
   if (!players) {
     return (
       <main>
+        <SoundToggle />
         <PlayerSignIn onReady={(player1, player2) => setPlayers([player1, player2])} />
       </main>
     );
@@ -17,6 +18,7 @@ export default function HomePage() {
 
   return (
     <main>
+      <SoundToggle />
       <GameBoard player1={players[0]} player2={players[1]} />
     </main>
   );

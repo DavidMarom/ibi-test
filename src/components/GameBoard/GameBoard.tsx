@@ -15,6 +15,7 @@ import {
   AI_THINKING_DELAY_MS,
   AI_THINKING_LABEL,
   BUST_MESSAGE,
+  BUST_PAUSE_DELAY_MS,
   DEFAULT_WINNING_SCORE,
   GENERIC_ERROR,
   HOLD_LABEL,
@@ -28,13 +29,20 @@ import {
   WIN_CAPTION_PREFIX,
 } from "./GameBoard.constants";
 import type { GameBoardProps, PendingAction } from "./GameBoard.types";
-import { findPublicPlayer, isAiTurn, resolveActingPlayer } from "./GameBoard.utils";
+import {
+  delay,
+  findPublicPlayer,
+  isAiTurn,
+  playSoundForResult,
+  resolveActingPlayer,
+} from "./GameBoard.utils";
 
 export function GameBoard({ player1, player2 }: GameBoardProps) {
   const [gameState, setGameState] = useState<GameStateResponse | null>(null);
   const [pendingAction, setPendingAction] = useState<PendingAction>(null);
   const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [bustKey, setBustKey] = useState(0);
   const newGameTriggerRef = useRef<HTMLButtonElement>(null);
 
   const isBusy = pendingAction !== null;
@@ -85,6 +93,7 @@ export function GameBoard({ player1, player2 }: GameBoardProps) {
       const token = await acting.getIdToken();
       const state = await rollDice(token);
       setGameState(state);
+      playSoundForResult(state);
     } catch (err) {
       setError(err instanceof Error ? err.message : GENERIC_ERROR);
     } finally {
@@ -101,6 +110,7 @@ export function GameBoard({ player1, player2 }: GameBoardProps) {
       const token = await acting.getIdToken();
       const state = await holdTurn(token);
       setGameState(state);
+      playSoundForResult(state);
     } catch (err) {
       setError(err instanceof Error ? err.message : GENERIC_ERROR);
     } finally {
@@ -115,26 +125,49 @@ export function GameBoard({ player1, player2 }: GameBoardProps) {
 
   useEffect(() => {
     if (!gameState || gameState.status === "finished") return;
-    if (!isAiTurn(gameState) || pendingAction !== null) return;
+    if (pendingAction !== null) return;
+    if (!gameState.wasBust && !isAiTurn(gameState)) return;
 
     let cancelled = false;
-    setPendingAction("ai");
 
-    const timer = setTimeout(async () => {
+    // A bust pause and the AI's own "thinking" pause must always play in
+    // sequence, never in parallel — e.g. a human busting into the AI's turn
+    // shows the bust pause first, then the AI's thinking pause, then its
+    // move. Driving both from one async effect (rather than two separate
+    // effects that both depend on `gameState`) guarantees that ordering:
+    // two independent effects can't see each other's setPendingAction call
+    // within the same commit, so they'd otherwise race.
+    (async () => {
+      if (gameState.wasBust) {
+        setBustKey((key) => key + 1);
+        setPendingAction("bust");
+        await delay(BUST_PAUSE_DELAY_MS);
+        if (cancelled) return;
+        setPendingAction(null);
+      }
+
+      if (!isAiTurn(gameState)) return;
+
+      setPendingAction("ai");
+      await delay(AI_THINKING_DELAY_MS);
+      if (cancelled) return;
+
       try {
         const token = await player1.getIdToken();
         const state = await triggerAiMove(token);
-        if (!cancelled) setGameState(state);
+        if (!cancelled) {
+          setGameState(state);
+          playSoundForResult(state);
+        }
       } catch (err) {
         if (!cancelled) setError(err instanceof Error ? err.message : GENERIC_ERROR);
       } finally {
         if (!cancelled) setPendingAction(null);
       }
-    }, AI_THINKING_DELAY_MS);
+    })();
 
     return () => {
       cancelled = true;
-      clearTimeout(timer);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gameState]);
@@ -226,7 +259,11 @@ export function GameBoard({ player1, player2 }: GameBoardProps) {
                 <DiceFace value={gameState.lastRoll?.die1 ?? null} />
                 <DiceFace value={gameState.lastRoll?.die2 ?? null} />
               </div>
-              {gameState.wasBust && <p className={styles.bustText}>{BUST_MESSAGE}</p>}
+              {gameState.wasBust && (
+                <p key={bustKey} className={styles.bustText}>
+                  {BUST_MESSAGE}
+                </p>
+              )}
             </div>
           )}
 
@@ -246,6 +283,8 @@ export function GameBoard({ player1, player2 }: GameBoardProps) {
             >
               {NEW_GAME_TRIGGER_LABEL}
             </button>
+          ) : pendingAction === "bust" ? (
+            <div className={styles.bustPause} />
           ) : isAiTurn(gameState) ? (
             <div className={styles.aiThinking} role="status" aria-live="polite">
               <span className={styles.spinner} aria-hidden="true" />

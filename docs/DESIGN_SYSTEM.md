@@ -162,12 +162,13 @@ bg → surface → surface-raised
 | TokenCounter | `src/components/TokenCounter/` | Stable — pill badge in Navbar showing Claude Code tokens since last reset; includes inline reset button |
 | PlayerSignIn | `src/components/PlayerSignIn/` | Stable — two-player Google sign-in gate for the dice game; `player2` slot also offers a "Play vs AI" choice (Secondary outline button pattern) that skips sign-in entirely |
 | PlayerBadge | `src/components/PlayerBadge/` | Stable — reusable avatar + display name; used by PlayerSignIn and PlayerScoreCard |
-| GameBoard | `src/components/GameBoard/` | Stable — dice game orchestrator: state, all API calls; during an AI opponent's turn, the `.actions` row (Roll/Hold) is temporarily replaced by a spinner + "AI is thinking…" status row (Loading spinner pattern), one action at a time |
+| GameBoard | `src/components/GameBoard/` | Stable — dice game orchestrator: state, all API calls; during an AI opponent's turn, the `.actions` row (Roll/Hold) is temporarily replaced by a spinner + "AI is thinking…" status row (Loading spinner pattern), one action at a time; on any bust, the actions row briefly goes empty (~1.2s) while the bust message plays the Attention-shake animation pattern |
 | GameSetup | `src/components/GameSetup/` | Stable — winning-score form, reused for first game and every reset |
 | NewGameModal | `src/components/NewGameModal/` | Stable — Modal-pattern wrapper around GameSetup for mid-game resets |
 | PlayerScoreCard | `src/components/PlayerScoreCard/` | Stable — per-player scoreboard card (PlayerBadge + score numeral + turn indicator) |
 | DiceFace | `src/components/DiceFace/` | Stable — pip-layout die display |
 | IbiSecondaryButton | `src/components/IbiSecondaryButton/` | In progress — IBI-brand pill CTA (cyan outline + leading arrow); not yet used on any page |
+| SoundToggle | `src/components/SoundToggle/` | Stable — standalone icon-only toggle button muting gameplay sound effects; `position: fixed` top-right of the viewport, rendered once at the page level (`src/app/page.tsx`) rather than inside `GameBoard`, so it's visible on the sign-in screen too, not just once a game exists |
 
 ---
 
@@ -188,6 +189,26 @@ First established for the TokenCounter reset button. Use when a read-only stat c
 | Focus ring | `outline: 2px solid var(--color-accent)`, `outline-offset: 3px` | Standard pattern |
 
 **ARIA contract:** outer `<div>` carries `role="status"` + `aria-live="polite"` + `aria-label` (updates after reset). The `<button>` carries `aria-label="Reset token counter"`.
+
+---
+
+## Standalone icon toggle button pattern
+
+First established for `SoundToggle` (mutes gameplay sound effects). Use for any icon-only control that toggles persistent on/off state, standing on its own rather than nested inside a pill or other container.
+
+| Property | Value | Rationale |
+|---|---|---|
+| Element | Real `<button type="button">` | Never a styled `<div>` |
+| Visible icon size | 18×18px | Matches every other icon in `src/components/icons/` |
+| Button box | 24×24px | Slightly larger than the icon so the box itself doesn't clip; still much smaller than the 44px touch target |
+| Hit area | 44×44px via `::after` with `inset: -10px` | Same technique as the Pill-with-inline-action pattern's reset button, confirmed to generalize to a standalone (non-pill-nested) control |
+| Icon color (default) | `var(--color-text-secondary)` | Secondary/utility control, not a primary action |
+| Icon color (hover) | `var(--color-text-primary)`, `transition: color 150ms ease` | Reuses the existing "Hover (text links)" interaction pattern |
+| State communication | A different icon glyph per state (e.g. `VolumeOnIcon` vs `VolumeOffIcon`), never color alone | Accessible even without color perception |
+| Focus-visible | `outline: 2px solid var(--color-accent)`, `outline-offset: 3px` | Standard pattern |
+| Active | `opacity: 0.8` | Matches the Secondary button pattern's active state |
+
+**ARIA contract:** `aria-pressed={boolean}` — first use of `aria-pressed` in this system; reserve it for genuine toggle controls (persistent on/off state), not momentary action buttons. `aria-label` always describes what the *click* will do next (e.g. `"Mute sound effects"` while unmuted, `"Unmute sound effects"` while muted), not the current state as a label.
 
 ---
 
@@ -318,6 +339,30 @@ Established for the dice game board.
 | Pip layout | standard six-sided die convention: 1 = center; 2 = opposite corners; 3 = diagonal + center; 4 = four corners; 5 = four corners + center; 6 = two columns of three |
 | Empty state | no roll yet (`value` unset) — tile with no pips, `border-color: var(--color-border)`, doesn't imply any value |
 | Accessible name | visually-hidden text "Die: {value}" per tile; pips themselves `aria-hidden` |
+
+---
+
+## Attention-shake animation pattern
+
+First transform-based attention animation in the system that isn't a spinner rotation or a hover lift — established for the bust message ("Bust — round score lost.") on a double-6 roll.
+
+| Property | Value | Rationale |
+|---|---|---|
+| Motion | `translateX` oscillation, amplitude `var(--space-1)` (4px) either side of center | Amplitude comes from the spacing scale rather than an arbitrary pixel value, consistent with "tokens before raw values" |
+| Duration | `500ms ease`, plays once per trigger | Long enough to register, short enough to finish well within any pause window built around it (e.g. the bust pause's ~1.2s) |
+| Trigger | Element mounts/re-keys per event — not a looping or hover-triggered animation | Attention animations in this system fire once per discrete event, not continuously |
+| Reduced motion | `animation: none` — element simply appears, no transform | Same precedent as the Loading spinner pattern: suppress transform, let the (already color/typography-distinct) content carry the meaning without motion |
+| Color | Unchanged from the element's existing color (e.g. `var(--color-error)` for the bust text) — this pattern only adds motion, never a new color | Keeps the pattern reusable without bundling in a color decision that belongs to whatever element uses it |
+
+```css
+@keyframes bustShake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(calc(var(--space-1) * -1)); }
+  40% { transform: translateX(var(--space-1)); }
+  60% { transform: translateX(calc(var(--space-1) * -0.75)); }
+  80% { transform: translateX(calc(var(--space-1) * 0.75)); }
+}
+```
 
 ---
 

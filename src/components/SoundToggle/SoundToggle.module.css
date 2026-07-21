@@ -1,0 +1,49 @@
+.toggle {
+  position: fixed;
+  top: var(--space-3);
+  right: var(--space-3);
+  z-index: 10;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: var(--color-text-secondary);
+  transition: color 150ms ease;
+}
+
+@media (min-width: 768px) {
+  .toggle {
+    top: var(--space-4);
+    right: var(--space-4);
+  }
+}
+
+.toggle::after {
+  content: "";
+  position: absolute;
+  inset: -10px;
+}
+
+.toggle:hover {
+  color: var(--color-text-primary);
+}
+
+.toggle:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+.toggle:active {
+  opacity: 0.8;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toggle {
+    transition: none;
+  }
+}

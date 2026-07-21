@@ -14,3 +14,4 @@ export const GENERIC_ERROR = "Something went wrong. Try again.";
 export const AI_THINKING_LABEL = "AI is thinking…";
 export const AI_EMOJI = "🤖";
 export const AI_THINKING_DELAY_MS = 800;
+export const BUST_PAUSE_DELAY_MS = 1200;

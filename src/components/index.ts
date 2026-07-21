@@ -13,3 +13,4 @@ export { NewGameModal } from "./NewGameModal/NewGameModal";
 export { PlayerScoreCard } from "./PlayerScoreCard/PlayerScoreCard";
 export { DiceFace } from "./DiceFace/DiceFace";
 export { IbiSecondaryButton } from "./IbiSecondaryButton/IbiSecondaryButton";
+export { SoundToggle } from "./SoundToggle/SoundToggle";
