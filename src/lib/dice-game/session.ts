@@ -1,3 +1,5 @@
+import { AI_PLAYER_UID } from "./aiPlayer";
+import { decideAiAction } from "./aiStrategy";
 import { createGame, hold as engineHold, rollDice } from "./engine";
 import type {
   GameActionResult,
@@ -130,6 +132,31 @@ export async function holdForPlayer(callerUid: string): Promise<SessionResult> {
   }
 
   return applyEngineResult(engineHold(activeSession.state));
+}
+
+export async function playAiTurn(callerUid: string): Promise<SessionResult> {
+  if (!activeSession) {
+    return {
+      ok: false,
+      error: "NO_ACTIVE_GAME",
+      message: "No active game. Start one first.",
+    };
+  }
+  if (!resolvePlayerId(activeSession, callerUid)) {
+    return {
+      ok: false,
+      error: "NOT_A_PLAYER",
+      message: "You are not a player in the active game.",
+    };
+  }
+  const currentPlayerUid = activeSession.playerUids[activeSession.state.currentPlayer];
+  if (currentPlayerUid !== AI_PLAYER_UID) {
+    return { ok: false, error: "NOT_AI_TURN", message: "It is not the AI's turn." };
+  }
+
+  const action = decideAiAction(activeSession.state);
+  const result = action === "roll" ? rollDice(activeSession.state) : engineHold(activeSession.state);
+  return applyEngineResult(result);
 }
 
 export function getActiveSession(): GameSession | null {

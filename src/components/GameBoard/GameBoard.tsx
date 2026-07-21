@@ -1,15 +1,19 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { DiceFace } from "@/components/DiceFace/DiceFace";
 import { GameSetup } from "@/components/GameSetup/GameSetup";
 import { NewGameModal } from "@/components/NewGameModal/NewGameModal";
 import { PlayerBadge } from "@/components/PlayerBadge/PlayerBadge";
 import { PlayerScoreCard } from "@/components/PlayerScoreCard/PlayerScoreCard";
-import { createGame, holdTurn, resetGame, rollDice } from "@/lib/gameApi";
+import { AI_PLAYER_UID } from "@/lib/dice-game/aiPlayer";
+import { createGame, holdTurn, resetGame, rollDice, triggerAiMove } from "@/lib/gameApi";
 import type { GameStateResponse } from "@/types/game";
 import styles from "./GameBoard.module.css";
 import {
+  AI_EMOJI,
+  AI_THINKING_DELAY_MS,
+  AI_THINKING_LABEL,
   BUST_MESSAGE,
   DEFAULT_WINNING_SCORE,
   GENERIC_ERROR,
@@ -24,7 +28,7 @@ import {
   WIN_CAPTION_PREFIX,
 } from "./GameBoard.constants";
 import type { GameBoardProps, PendingAction } from "./GameBoard.types";
-import { findPublicPlayer, resolveActingPlayer } from "./GameBoard.utils";
+import { findPublicPlayer, isAiTurn, resolveActingPlayer } from "./GameBoard.utils";
 
 export function GameBoard({ player1, player2 }: GameBoardProps) {
   const [gameState, setGameState] = useState<GameStateResponse | null>(null);
@@ -39,9 +43,10 @@ export function GameBoard({ player1, player2 }: GameBoardProps) {
     setPendingAction("setup");
     setError(null);
     try {
+      const isAiOpponent = player2.uid === AI_PLAYER_UID;
       const [token, player2Token] = await Promise.all([
         player1.getIdToken(),
-        player2.getIdToken(),
+        isAiOpponent ? Promise.resolve(undefined) : player2.getIdToken(),
       ]);
       const state = await createGame(token, player1.uid, player2.uid, winningScore, player2Token);
       setGameState(state);
@@ -56,8 +61,11 @@ export function GameBoard({ player1, player2 }: GameBoardProps) {
     setPendingAction("reset");
     setError(null);
     try {
-      const acting = gameState ? resolveActingPlayer(gameState, player1, player2) : player1;
-      const token = await acting.getIdToken();
+      // resetGame only requires the caller to be one of the two registered
+      // players, not whoever's turn it currently is — so player1's own token
+      // always works here, in both two-human and AI-opponent games (where
+      // player2's synthetic AuthedPlayer has no real getIdToken to call).
+      const token = await player1.getIdToken();
       const state = await resetGame(token, winningScore);
       setGameState(state);
       setIsModalOpen(false);
@@ -104,6 +112,32 @@ export function GameBoard({ player1, player2 }: GameBoardProps) {
     setIsModalOpen(false);
     newGameTriggerRef.current?.focus();
   }
+
+  useEffect(() => {
+    if (!gameState || gameState.status === "finished") return;
+    if (!isAiTurn(gameState) || pendingAction !== null) return;
+
+    let cancelled = false;
+    setPendingAction("ai");
+
+    const timer = setTimeout(async () => {
+      try {
+        const token = await player1.getIdToken();
+        const state = await triggerAiMove(token);
+        if (!cancelled) setGameState(state);
+      } catch (err) {
+        if (!cancelled) setError(err instanceof Error ? err.message : GENERIC_ERROR);
+      } finally {
+        if (!cancelled) setPendingAction(null);
+      }
+    }, AI_THINKING_DELAY_MS);
+
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gameState]);
 
   if (!gameState) {
     return (
@@ -212,6 +246,12 @@ export function GameBoard({ player1, player2 }: GameBoardProps) {
             >
               {NEW_GAME_TRIGGER_LABEL}
             </button>
+          ) : isAiTurn(gameState) ? (
+            <div className={styles.aiThinking} role="status" aria-live="polite">
+              <span className={styles.spinner} aria-hidden="true" />
+              <span aria-hidden="true">{AI_EMOJI}</span>
+              {AI_THINKING_LABEL}
+            </div>
           ) : (
             <div className={styles.actions}>
               <button type="button" className={styles.rollButton} disabled={isBusy} onClick={handleRoll}>

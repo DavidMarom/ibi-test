@@ -11,3 +11,6 @@ export const WINNING_SCORE_PREFIX = "Playing to ";
 export const BUST_MESSAGE = "Bust — round score lost.";
 export const WIN_CAPTION_PREFIX = "Final score: ";
 export const GENERIC_ERROR = "Something went wrong. Try again.";
+export const AI_THINKING_LABEL = "AI is thinking…";
+export const AI_EMOJI = "🤖";
+export const AI_THINKING_DELAY_MS = 800;

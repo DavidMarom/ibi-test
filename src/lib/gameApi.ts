@@ -48,3 +48,7 @@ export async function rollDice(idToken: string): Promise<GameStateResponse> {
 export async function holdTurn(idToken: string): Promise<GameStateResponse> {
   return postJson("/api/game/hold", idToken);
 }
+
+export async function triggerAiMove(idToken: string): Promise<GameStateResponse> {
+  return postJson("/api/game/ai-move", idToken);
+}

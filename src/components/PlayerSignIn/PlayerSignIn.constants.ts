@@ -9,6 +9,11 @@ export const DUPLICATE_ACCOUNT_ERROR =
 export const START_GAME_LABEL = "Start Game";
 export const START_GAME_DISABLED_HINT = "Both players must sign in first.";
 
+export const OR_DIVIDER_LABEL = "or";
+export const PLAY_VS_AI_LABEL = "Play vs AI";
+export const AI_READY_LABEL = "AI Opponent";
+export const AI_EMOJI = "🤖";
+
 export const PLAYER_LABELS = {
   player1: "Player 1",
   player2: "Player 2",

@@ -1,5 +1,10 @@
+import { AI_PLAYER_UID } from "@/lib/dice-game/aiPlayer";
 import type { GameStateResponse, PublicPlayer } from "@/types/game";
 import type { AuthedPlayer } from "@/types/player";
+
+export function isAiTurn(gameState: GameStateResponse): boolean {
+  return gameState.currentPlayerUid === AI_PLAYER_UID;
+}
 
 export function resolveActingPlayer(
   gameState: GameStateResponse,

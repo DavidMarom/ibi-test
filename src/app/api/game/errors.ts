@@ -8,6 +8,7 @@ export function statusForSessionError(error: SessionErrorCode): number {
       return 403;
     case "NO_ACTIVE_GAME":
     case "NOT_YOUR_TURN":
+    case "NOT_AI_TURN":
     case "GAME_FINISHED":
       return 409;
   }

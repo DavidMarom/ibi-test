@@ -1,9 +1,12 @@
 import { getPlayer } from "@/lib/auth";
-import { getWins } from "@/lib/dice-game";
+import { AI_PLAYER_PROFILE, AI_PLAYER_UID, getWins } from "@/lib/dice-game";
 import type { GameSession, PlayerId } from "@/lib/dice-game";
 
 async function serializePlayer(uid: string, id: PlayerId, score: number) {
-  const profile = getPlayer(uid);
+  // The AI opponent has no real Firebase account, so it never goes through
+  // upsertPlayer/playerStore — resolve its profile from the fixed constant
+  // instead of falling back to the raw uid (see docs/LEARNINGS.md).
+  const profile = uid === AI_PLAYER_UID ? AI_PLAYER_PROFILE : getPlayer(uid);
   return {
     id,
     uid,

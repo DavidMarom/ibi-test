@@ -114,6 +114,27 @@
   flex-shrink: 0;
 }
 
+.slotChoices {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-2);
+}
+
+@media (min-width: 768px) {
+  .slotChoices {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+.orDivider {
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--color-text-secondary);
+}
+
 .signInButton {
   display: flex;
   align-items: center;

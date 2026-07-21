@@ -3,23 +3,28 @@
 import { useState } from "react";
 import { GoogleIcon, CheckIcon } from "@/components/icons";
 import { PlayerBadge } from "@/components/PlayerBadge/PlayerBadge";
+import { AI_PLAYER_UID } from "@/lib/dice-game/aiPlayer";
 import type { PlayerSlot } from "@/lib/firebase/client";
 import type { AuthedPlayer } from "@/types/player";
 import styles from "./PlayerSignIn.module.css";
 import {
+  AI_EMOJI,
+  AI_READY_LABEL,
   CAPTION,
   DUPLICATE_ACCOUNT_ERROR,
   GENERIC_ERROR,
   HEADING,
   LOADING_LABEL,
+  OR_DIVIDER_LABEL,
   PLAYER_LABELS,
+  PLAY_VS_AI_LABEL,
   SIGNED_IN_LABEL,
   SIGN_IN_LABEL,
   START_GAME_DISABLED_HINT,
   START_GAME_LABEL,
 } from "./PlayerSignIn.constants";
 import { IDLE_SLOT_STATE, type SlotState } from "./PlayerSignIn.types";
-import { signInSlotWithGoogle, signOutSlot } from "./PlayerSignIn.utils";
+import { createAiPlayer, signInSlotWithGoogle, signOutSlot } from "./PlayerSignIn.utils";
 
 export interface PlayerSignInProps {
   onReady: (player1: AuthedPlayer, player2: AuthedPlayer) => void;
@@ -59,6 +64,10 @@ export function PlayerSignIn({ onReady }: PlayerSignInProps) {
     }
   }
 
+  function handlePlayVsAi() {
+    setPlayer2({ status: "signed_in", player: createAiPlayer(), errorMessage: null });
+  }
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.card}>
@@ -67,7 +76,7 @@ export function PlayerSignIn({ onReady }: PlayerSignInProps) {
 
         <div className={styles.slots}>
           <PlayerSlotRow slot="player1" state={player1} onSignIn={handleSignIn} />
-          <PlayerSlotRow slot="player2" state={player2} onSignIn={handleSignIn} />
+          <PlayerSlotRow slot="player2" state={player2} onSignIn={handleSignIn} onPlayVsAi={handlePlayVsAi} />
         </div>
 
         <button
@@ -93,10 +102,12 @@ interface PlayerSlotRowProps {
   slot: PlayerSlot;
   state: SlotState;
   onSignIn: (slot: PlayerSlot) => void;
+  onPlayVsAi?: () => void;
 }
 
-function PlayerSlotRow({ slot, state, onSignIn }: PlayerSlotRowProps) {
+function PlayerSlotRow({ slot, state, onSignIn, onPlayVsAi }: PlayerSlotRowProps) {
   const label = PLAYER_LABELS[slot];
+  const isAi = state.player?.uid === AI_PLAYER_UID;
 
   return (
     <div className={styles.slotRow}>
@@ -112,24 +123,43 @@ function PlayerSlotRow({ slot, state, onSignIn }: PlayerSlotRowProps) {
         <div className={styles.slotAction}>
           {state.status === "signed_in" ? (
             <span className={styles.signedInStatus}>
-              <CheckIcon />
-              {SIGNED_IN_LABEL}
+              {isAi ? <span aria-hidden="true">{AI_EMOJI}</span> : <CheckIcon />}
+              {isAi ? AI_READY_LABEL : SIGNED_IN_LABEL}
             </span>
           ) : (
-            <button
-              type="button"
-              className={styles.signInButton}
-              disabled={state.status === "loading"}
-              aria-label={`${SIGN_IN_LABEL} — ${label}`}
-              onClick={() => onSignIn(slot)}
-            >
-              {state.status === "loading" ? (
-                <span className={styles.spinner} aria-hidden="true" />
-              ) : (
-                <GoogleIcon />
+            <div className={styles.slotChoices}>
+              <button
+                type="button"
+                className={styles.signInButton}
+                disabled={state.status === "loading"}
+                aria-label={`${SIGN_IN_LABEL} — ${label}`}
+                onClick={() => onSignIn(slot)}
+              >
+                {state.status === "loading" ? (
+                  <span className={styles.spinner} aria-hidden="true" />
+                ) : (
+                  <GoogleIcon />
+                )}
+                {state.status === "loading" ? LOADING_LABEL : SIGN_IN_LABEL}
+              </button>
+
+              {onPlayVsAi && (
+                <>
+                  <span className={styles.orDivider} aria-hidden="true">
+                    {OR_DIVIDER_LABEL}
+                  </span>
+                  <button
+                    type="button"
+                    className={styles.signInButton}
+                    disabled={state.status === "loading"}
+                    onClick={onPlayVsAi}
+                  >
+                    <span aria-hidden="true">{AI_EMOJI}</span>
+                    {PLAY_VS_AI_LABEL}
+                  </button>
+                </>
               )}
-              {state.status === "loading" ? LOADING_LABEL : SIGN_IN_LABEL}
-            </button>
+            </div>
           )}
         </div>
       </div>

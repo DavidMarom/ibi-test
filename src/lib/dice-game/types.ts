@@ -46,7 +46,8 @@ export type SessionErrorCode =
   | GameActionErrorCode
   | "NO_ACTIVE_GAME"
   | "NOT_A_PLAYER"
-  | "NOT_YOUR_TURN";
+  | "NOT_YOUR_TURN"
+  | "NOT_AI_TURN";
 
 export interface SessionFailure {
   ok: false;

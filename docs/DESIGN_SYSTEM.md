@@ -160,9 +160,9 @@ bg → surface → surface-raised
 | DiscordBanner | `src/components/DiscordBanner/` | Planned — community invite strip between Personas and Footer |
 | VulnerabilityListButton | `src/components/VulnerabilityListButton/` | Planned — trigger button + modal for Nehemiah's 24 vulnerability classes |
 | TokenCounter | `src/components/TokenCounter/` | Stable — pill badge in Navbar showing Claude Code tokens since last reset; includes inline reset button |
-| PlayerSignIn | `src/components/PlayerSignIn/` | Stable — two-player Google sign-in gate for the dice game |
+| PlayerSignIn | `src/components/PlayerSignIn/` | Stable — two-player Google sign-in gate for the dice game; `player2` slot also offers a "Play vs AI" choice (Secondary outline button pattern) that skips sign-in entirely |
 | PlayerBadge | `src/components/PlayerBadge/` | Stable — reusable avatar + display name; used by PlayerSignIn and PlayerScoreCard |
-| GameBoard | `src/components/GameBoard/` | Stable — dice game orchestrator: state, all API calls |
+| GameBoard | `src/components/GameBoard/` | Stable — dice game orchestrator: state, all API calls; during an AI opponent's turn, the `.actions` row (Roll/Hold) is temporarily replaced by a spinner + "AI is thinking…" status row (Loading spinner pattern), one action at a time |
 | GameSetup | `src/components/GameSetup/` | Stable — winning-score form, reused for first game and every reset |
 | NewGameModal | `src/components/NewGameModal/` | Stable — Modal-pattern wrapper around GameSetup for mid-game resets |
 | PlayerScoreCard | `src/components/PlayerScoreCard/` | Stable — per-player scoreboard card (PlayerBadge + score numeral + turn indicator) |
