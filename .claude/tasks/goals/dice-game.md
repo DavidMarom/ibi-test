@@ -5,8 +5,8 @@ Status: in progress
 Full-stack dice game per take-home assignment: backend owns all game rules/state, React frontend only displays state and calls the API. Google Sign-In (Firebase) authenticates both players, simulated on one page/browser.
 
 ## Tasks
-- [ ] .claude/tasks/dice-game-engine.md
-- [ ] .claude/tasks/dice-game-auth-backend.md
+- [x] .claude/tasks/dice-game-engine.done.md
+- [x] .claude/tasks/dice-game-auth-backend.done.md
 - [ ] .claude/tasks/dice-game-api.md
 - [ ] .claude/tasks/dice-game-auth-ui.md
 - [ ] .claude/tasks/dice-game-board-ui.md
