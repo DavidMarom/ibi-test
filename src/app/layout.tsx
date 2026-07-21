@@ -13,17 +13,17 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ibi-test",
-  description: "Home assignment for ibi.",
+  title: "IBI Dice Roller",
+  description: "Home assignment for IBI.",
   icons: {
     icon: [
-      { url: "/favicon2/favicon.ico", sizes: "48x48" },
-      { url: "/favicon2/favicon-16x16.png", sizes: "16x16", type: "image/png" },
-      { url: "/favicon2/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon_io/favicon.ico", sizes: "48x48" },
+      { url: "/favicon_io/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/favicon_io/favicon-32x32.png", sizes: "32x32", type: "image/png" },
     ],
-    apple: { url: "/favicon2/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    apple: { url: "/favicon_io/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
   },
-  manifest: "/favicon2/site.webmanifest",
+  manifest: "/favicon_io/site.webmanifest",
 };
 
 export default function RootLayout({
