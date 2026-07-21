@@ -1,0 +1,116 @@
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: 56px;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 var(--space-3);
+}
+
+.logo {
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  letter-spacing: -0.01em;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.navLink {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  border-radius: 4px;
+  padding: 4px 8px;
+  min-height: 44px;
+  transition: color 150ms ease;
+}
+
+.navLink:hover {
+  color: var(--color-text-primary);
+}
+
+.navLink:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+.githubLink {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  border-radius: 4px;
+  padding: 4px 2px;
+  transition: color 150ms ease;
+}
+
+.githubLink:hover {
+  color: var(--color-text-primary);
+}
+
+.githubLink:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+.linkedinLink {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  border-radius: 4px;
+  padding: 4px 2px;
+  min-height: 44px;
+  transition: color 150ms ease;
+}
+
+.linkedinLink:hover {
+  color: var(--color-text-primary);
+}
+
+.linkedinLink:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+.linkedinLabel {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .linkedinLabel {
+    display: inline;
+  }
+}
+
+@media (min-width: 768px) {
+  .navbar {
+    height: 64px;
+  }
+
+  .inner {
+    padding: 0 var(--space-4);
+  }
+}
