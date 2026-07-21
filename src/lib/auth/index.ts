@@ -1,4 +1,4 @@
-export { authenticateRequest } from "./verifyRequest";
+export { authenticateRequest, verifyIdToken } from "./verifyRequest";
 export { upsertPlayer, getPlayer } from "./playerStore";
 export type {
   PlayerProfile,

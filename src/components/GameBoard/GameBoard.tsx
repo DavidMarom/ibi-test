@@ -39,8 +39,11 @@ export function GameBoard({ player1, player2 }: GameBoardProps) {
     setPendingAction("setup");
     setError(null);
     try {
-      const token = await player1.getIdToken();
-      const state = await createGame(token, player1.uid, player2.uid, winningScore);
+      const [token, player2Token] = await Promise.all([
+        player1.getIdToken(),
+        player2.getIdToken(),
+      ]);
+      const state = await createGame(token, player1.uid, player2.uid, winningScore, player2Token);
       setGameState(state);
     } catch (err) {
       setError(err instanceof Error ? err.message : GENERIC_ERROR);

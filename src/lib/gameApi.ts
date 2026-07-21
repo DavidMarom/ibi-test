@@ -26,9 +26,15 @@ export async function createGame(
   idToken: string,
   player1Uid: string,
   player2Uid: string,
-  winningScore: number
+  winningScore: number,
+  otherPlayerIdToken?: string
 ): Promise<GameStateResponse> {
-  return postJson("/api/game", idToken, { player1Uid, player2Uid, winningScore });
+  return postJson("/api/game", idToken, {
+    player1Uid,
+    player2Uid,
+    winningScore,
+    player2IdToken: otherPlayerIdToken,
+  });
 }
 
 export async function resetGame(idToken: string, winningScore: number): Promise<GameStateResponse> {

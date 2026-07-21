@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { authenticateRequest } from "@/lib/auth";
+import { authenticateRequest, verifyIdToken } from "@/lib/auth";
 import { getActiveSession, startGame } from "@/lib/dice-game";
 import { statusForSessionError } from "./errors";
 import { parseJsonBody } from "./parseBody";
@@ -18,7 +18,7 @@ export async function POST(request: Request): Promise<NextResponse> {
     return NextResponse.json({ message: "Invalid JSON body." }, { status: 400 });
   }
 
-  const { player1Uid, player2Uid, winningScore } = body;
+  const { player1Uid, player2Uid, player2IdToken, winningScore } = body;
   if (typeof player1Uid !== "string" || !player1Uid || typeof player2Uid !== "string" || !player2Uid) {
     return NextResponse.json(
       { message: "player1Uid and player2Uid (strings) are required." },
@@ -33,6 +33,14 @@ export async function POST(request: Request): Promise<NextResponse> {
   }
   if (winningScore !== undefined && typeof winningScore !== "number") {
     return NextResponse.json({ message: "winningScore must be a number." }, { status: 400 });
+  }
+
+  // authenticateRequest above only verifies (and registers) the caller's own
+  // profile. The other player's ID token, if supplied, is verified here too so
+  // their display name is registered before the game first renders, instead of
+  // only after they take their own first authenticated action.
+  if (typeof player2IdToken === "string" && player2IdToken) {
+    await verifyIdToken(player2IdToken);
   }
 
   const result = startGame(auth.profile.uid, player1Uid, player2Uid, winningScore);

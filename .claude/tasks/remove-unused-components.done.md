@@ -1,6 +1,6 @@
 # Task: Remove unused components (Navbar, CodeBlock, SkillCard, Footer)
 
-Status: reviewing
+Status: done
 Track: B
 Track reason: Refactor/cleanup — internal structure only, no user-facing visual change; removing dead code, not building anything new.
 
@@ -46,3 +46,6 @@ Any of the four components with zero real usages elsewhere in the codebase are d
 - [x] Report of removed/kept per component — provided in Implementation Notes above
 - [x] Only these four components evaluated, no other components touched — confirmed via diff, only `CodeBlock` deletion and `index.ts` edit
 - [x] Project builds/typechecks cleanly after removal — confirmed via `npm run build` (Next.js 16.2.6, TypeScript check passed, all routes generated)
+
+## Completion Summary
+Audited `Navbar`, `CodeBlock`, `SkillCard`, and `Footer` for real usages across the codebase. `CodeBlock` had none and was deleted (folder + barrel export); `Navbar`, `SkillCard`, and `Footer` were all in active use in `src/app/skills/page.tsx` and were left untouched. Build verified clean after the change. Confirmed done by the user on 2026-07-21.

@@ -16,21 +16,14 @@ function readStringClaim(value: unknown): string | null {
   return typeof value === "string" && value.length > 0 ? value : null;
 }
 
-export async function authenticateRequest(
-  request: Request
-): Promise<AuthResult> {
+type TokenVerifyResult =
+  | { ok: true; profile: PlayerProfile }
+  | { ok: false; message: string };
+
+export async function verifyIdToken(token: string): Promise<TokenVerifyResult> {
   const projectId = process.env.PROJECT_ID;
   if (!projectId) {
-    return {
-      ok: false,
-      status: 401,
-      message: "Server auth is not configured (missing PROJECT_ID).",
-    };
-  }
-
-  const token = extractBearerToken(request);
-  if (!token) {
-    return { ok: false, status: 401, message: "Missing bearer token." };
+    return { ok: false, message: "Server auth is not configured (missing PROJECT_ID)." };
   }
 
   let payload;
@@ -40,12 +33,12 @@ export async function authenticateRequest(
       audience: projectId,
     }));
   } catch {
-    return { ok: false, status: 401, message: "Invalid or expired token." };
+    return { ok: false, message: "Invalid or expired token." };
   }
 
   const uid = readStringClaim(payload.sub);
   if (!uid) {
-    return { ok: false, status: 401, message: "Token is missing a subject." };
+    return { ok: false, message: "Token is missing a subject." };
   }
 
   const profile: PlayerProfile = {
@@ -58,4 +51,20 @@ export async function authenticateRequest(
   upsertPlayer(profile);
 
   return { ok: true, profile };
+}
+
+export async function authenticateRequest(
+  request: Request
+): Promise<AuthResult> {
+  const token = extractBearerToken(request);
+  if (!token) {
+    return { ok: false, status: 401, message: "Missing bearer token." };
+  }
+
+  const result = await verifyIdToken(token);
+  if (!result.ok) {
+    return { ok: false, status: 401, message: result.message };
+  }
+
+  return { ok: true, profile: result.profile };
 }

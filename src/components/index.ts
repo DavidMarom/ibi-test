@@ -1,7 +1,7 @@
-export { Navbar } from "./Navbar/Navbar";
+// export { Navbar } from "./Navbar/Navbar";
 export { Features } from "./Features/Features";
 export { FeatureCard } from "./FeatureCard/FeatureCard";
-export { Footer } from "./Footer/Footer";
+// export { Footer } from "./Footer/Footer";
 export { PageHeader } from "./PageHeader/PageHeader";
 export { SkillCard } from "./SkillCard/SkillCard";
 export { PipelineFlow } from "./PipelineFlow/PipelineFlow";
