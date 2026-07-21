@@ -7,6 +7,7 @@ export {
   getActiveSession,
 } from "./session";
 export { DEFAULT_WINNING_SCORE, BUST_DIE_VALUE, PLAYER_IDS } from "./constants";
+export { getWins } from "./winStore";
 export type {
   PlayerId,
   GameStatus,

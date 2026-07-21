@@ -1,4 +1,5 @@
 import { getPlayer } from "@/lib/auth";
+import { getWins } from "@/lib/dice-game";
 import type { GameSession, PlayerId } from "@/lib/dice-game";
 
 function serializePlayer(uid: string, id: PlayerId, score: number) {
@@ -9,6 +10,7 @@ function serializePlayer(uid: string, id: PlayerId, score: number) {
     displayName: profile?.displayName ?? uid,
     photoURL: profile?.photoURL ?? null,
     score,
+    wins: getWins(uid),
   };
 }
 

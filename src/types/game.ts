@@ -11,6 +11,7 @@ export interface PublicPlayer {
   displayName: string;
   photoURL: string | null;
   score: number;
+  wins: number;
 }
 
 export interface GameStateResponse {

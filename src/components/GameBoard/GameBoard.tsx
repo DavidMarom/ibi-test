@@ -144,12 +144,14 @@ export function GameBoard({ player1, player2 }: GameBoardProps) {
             displayName={p1.displayName}
             photoURL={p1.photoURL}
             score={p1.score}
+            wins={p1.wins}
             isCurrentTurn={!isFinished && gameState.currentPlayerUid === p1.uid}
           />
           <PlayerScoreCard
             displayName={p2.displayName}
             photoURL={p2.photoURL}
             score={p2.score}
+            wins={p2.wins}
             isCurrentTurn={!isFinished && gameState.currentPlayerUid === p2.uid}
           />
         </div>

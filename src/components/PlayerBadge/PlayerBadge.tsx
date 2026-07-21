@@ -5,7 +5,7 @@ import styles from "./PlayerBadge.module.css";
 import { initials } from "./PlayerBadge.utils";
 import type { PlayerBadgeProps } from "./PlayerBadge.types";
 
-export function PlayerBadge({ displayName, photoURL, size = "sm" }: PlayerBadgeProps) {
+export function PlayerBadge({ displayName, photoURL, size = "sm", wins }: PlayerBadgeProps) {
   const [imageFailed, setImageFailed] = useState(false);
   const showImage = photoURL && !imageFailed;
 
@@ -25,6 +25,11 @@ export function PlayerBadge({ displayName, photoURL, size = "sm" }: PlayerBadgeP
         )}
       </div>
       <span className={styles.name}>{displayName}</span>
+      {wins !== undefined && (
+        <span className={styles.winsPill} aria-label={`${wins} ${wins === 1 ? "win" : "wins"}`}>
+          🏆 {wins}
+        </span>
+      )}
     </div>
   );
 }

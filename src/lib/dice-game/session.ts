@@ -5,6 +5,7 @@ import type {
   PlayerId,
   SessionResult,
 } from "./types";
+import { incrementWins } from "./winStore";
 
 let activeSession: GameSession | null = null;
 
@@ -21,7 +22,13 @@ function applyEngineResult(result: GameActionResult): SessionResult {
   if (!activeSession) {
     return { ok: false, error: "NO_ACTIVE_GAME", message: "No active game." };
   }
+  const wasFinished = activeSession.state.status === "finished";
   activeSession = { ...activeSession, state: result.state };
+
+  if (!wasFinished && result.state.status === "finished" && result.state.winner) {
+    incrementWins(activeSession.playerUids[result.state.winner]);
+  }
+
   return { ok: true, session: activeSession };
 }
 

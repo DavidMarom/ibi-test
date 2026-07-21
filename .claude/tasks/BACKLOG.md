@@ -1,6 +1,6 @@
 # Backlog
 
-- [ ] Track how many times each player has won (added 2026-07-21)
+- [x] Track how many times each player has won (added 2026-07-21)
 - [ ] Persist game/player data (e.g. database or local storage) (added 2026-07-21)
 - [ ] Add an AI opponent (added 2026-07-21)
 - [ ] On rolling 6 & 6, disable actions briefly and show a message/animation (added 2026-07-21)
