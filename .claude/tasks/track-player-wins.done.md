@@ -1,6 +1,6 @@
 # Task: Track how many times each player has won
 
-Status: reviewing
+Status: done
 Track: B
 Track reason: The design system already documents a "pill badges (stat chips, counters)" pattern (`docs/DESIGN_SYSTEM.md` — Radius table) and a fixed Mono score-numeral style used by `PlayerScoreCard`; this reuses that existing pattern for a second small numeral rather than introducing a new visual pattern.
 
@@ -51,3 +51,6 @@ Each player's badge/scoreboard shows how many games they've won so far this sess
 - [x] Build/typecheck — `npm run build` passes cleanly
 
 Note on the developer's "display scope" deviation: wins show throughout actual gameplay (including after the game finishes and through subsequent resets) but not on the one-time pre-game setup screen before a player's very first game. This reasonably satisfies the "visible throughout, not just the win banner" requirement — flagging the setup-screen gap to the user below in case they want it covered too, but not treating it as a blocking gap.
+
+## Completion Summary
+Added a per-player win tally (in-memory, keyed by uid, incremented exactly once when a game transitions to finished) displayed as a "🏆 N" pill next to each player's badge on the scoreboard, using the existing pill/counter design pattern with no new tokens. Persists across "New Game" resets within the same server session. User confirmed the setup-screen display gap (wins not shown before a pair's very first game) is fine to leave as-is. Closed 2026-07-21.

@@ -1,11 +1,30 @@
-const wins = new Map<string, number>();
+import { getDb } from "@/lib/db/mongo";
 
-export function incrementWins(uid: string): number {
-  const next = (wins.get(uid) ?? 0) + 1;
-  wins.set(uid, next);
-  return next;
+const COLLECTION_NAME = "playerWins";
+
+interface PlayerWinsDocument {
+  uid: string;
+  wins: number;
 }
 
-export function getWins(uid: string): number {
-  return wins.get(uid) ?? 0;
+export async function incrementWins(uid: string): Promise<number> {
+  const db = await getDb();
+  const result = await db
+    .collection<PlayerWinsDocument>(COLLECTION_NAME)
+    .findOneAndUpdate(
+      { uid },
+      { $inc: { wins: 1 } },
+      { upsert: true, returnDocument: "after" }
+    );
+
+  return result?.wins ?? 1;
+}
+
+export async function getWins(uid: string): Promise<number> {
+  const db = await getDb();
+  const doc = await db
+    .collection<PlayerWinsDocument>(COLLECTION_NAME)
+    .findOne({ uid });
+
+  return doc?.wins ?? 0;
 }

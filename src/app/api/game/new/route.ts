@@ -31,5 +31,5 @@ export async function POST(request: Request): Promise<NextResponse> {
     );
   }
 
-  return NextResponse.json(serializeSession(result.session));
+  return NextResponse.json(await serializeSession(result.session));
 }

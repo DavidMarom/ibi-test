@@ -51,7 +51,7 @@ export async function POST(request: Request): Promise<NextResponse> {
     );
   }
 
-  return NextResponse.json(serializeSession(result.session));
+  return NextResponse.json(await serializeSession(result.session));
 }
 
 export async function GET(request: Request): Promise<NextResponse> {
@@ -65,5 +65,5 @@ export async function GET(request: Request): Promise<NextResponse> {
     return NextResponse.json({ message: "No active game." }, { status: 409 });
   }
 
-  return NextResponse.json(serializeSession(session));
+  return NextResponse.json(await serializeSession(session));
 }

@@ -12,7 +12,7 @@ export async function POST(request: Request): Promise<NextResponse> {
     return NextResponse.json({ message: auth.message }, { status: auth.status });
   }
 
-  const result = rollForPlayer(auth.profile.uid);
+  const result = await rollForPlayer(auth.profile.uid);
   if (!result.ok) {
     return NextResponse.json(
       { message: result.message },
@@ -20,5 +20,5 @@ export async function POST(request: Request): Promise<NextResponse> {
     );
   }
 
-  return NextResponse.json(serializeSession(result.session));
+  return NextResponse.json(await serializeSession(result.session));
 }

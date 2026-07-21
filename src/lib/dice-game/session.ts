@@ -15,7 +15,7 @@ function resolvePlayerId(session: GameSession, uid: string): PlayerId | null {
   return null;
 }
 
-function applyEngineResult(result: GameActionResult): SessionResult {
+async function applyEngineResult(result: GameActionResult): Promise<SessionResult> {
   if (!result.ok) {
     return { ok: false, error: result.error, message: result.message };
   }
@@ -26,7 +26,7 @@ function applyEngineResult(result: GameActionResult): SessionResult {
   activeSession = { ...activeSession, state: result.state };
 
   if (!wasFinished && result.state.status === "finished" && result.state.winner) {
-    incrementWins(activeSession.playerUids[result.state.winner]);
+    await incrementWins(activeSession.playerUids[result.state.winner]);
   }
 
   return { ok: true, session: activeSession };
@@ -86,7 +86,7 @@ export function resetGame(
   return { ok: true, session: activeSession };
 }
 
-export function rollForPlayer(callerUid: string): SessionResult {
+export async function rollForPlayer(callerUid: string): Promise<SessionResult> {
   if (!activeSession) {
     return {
       ok: false,
@@ -109,7 +109,7 @@ export function rollForPlayer(callerUid: string): SessionResult {
   return applyEngineResult(rollDice(activeSession.state));
 }
 
-export function holdForPlayer(callerUid: string): SessionResult {
+export async function holdForPlayer(callerUid: string): Promise<SessionResult> {
   if (!activeSession) {
     return {
       ok: false,
