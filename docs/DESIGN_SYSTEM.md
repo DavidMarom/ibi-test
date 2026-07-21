@@ -30,6 +30,23 @@ Defined in `src/app/globals.css` as CSS custom properties.
 
 ---
 
+## IBI brand palette (parallel token set)
+
+A second, **namespaced** palette (`--color-ibi-*`) exists alongside the tokens above — introduced for the IBI brand refresh, not a replacement. The original tokens above are untouched and keep serving every existing component; nothing was restyled as a side effect of adding these. A future task may migrate a specific component from the old tokens to these, deliberately, one at a time.
+
+**Values are eyeballed from two reference images (a homepage mockup + a button close-up crop) — no formal brand guideline document was supplied.** Treat as close approximations, not certified brand colors; if exact hex values surface later, update them here and in `globals.css` and everything using them updates at once.
+
+| Token | Value | Usage |
+|---|---|---|
+| `--color-ibi-navbar` | `#0d1526` | Darkest navy — navbar background in the reference |
+| `--color-ibi-surface` | `#12213b` | Slightly lighter navy — hero/section background in the reference |
+| `--color-ibi-accent` | `#35c5e3` | Cyan — border/text/icon color on the new secondary button |
+| `--color-ibi-accent-dim` | `rgba(53, 197, 227, 0.12)` | Hover background for the new button, parallels `--color-accent-dim`'s convention |
+| `--color-ibi-text-primary` | `#ffffff` | Headline text in the reference |
+| `--color-ibi-text-muted` | `#b9c4d3` | Muted body-copy color in the reference (kept for future use; this project stays English/LTR for now) |
+
+---
+
 ## Spacing scale
 
 Base unit: **4px**. All spacing uses these tokens — no raw px values in components.
@@ -61,8 +78,11 @@ Fonts loaded via Next.js font system (`var(--font-geist-sans)`, `var(--font-geis
 | Card description (desktop) | Geist Sans | 15px | 400 | 1.6 |
 | Footer / captions | Geist Sans | 13px | 400 | 1.5 |
 | Score numeral | Geist Mono | 28px | 700 | — |
+| Display headline (IBI) | Geist Sans | 40px mobile / 72px desktop | 800 | 1.05 |
 
 Score numeral is fixed at 28px across every breakpoint (a compact number doesn't need responsive scaling) — first numeral-emphasis role in the system; Mono was chosen to match "Logo / code labels" for a scoreboard-like character distinct from body/heading text.
+
+Display headline is by far the largest role in the system, introduced for the IBI brand refresh's hero-scale headlines (e.g. "CREATING WEALTH" in the reference mockup). Also uses `text-transform: uppercase` and `letter-spacing: -0.01em`, `color: var(--color-ibi-text-primary)`. No new font family — reuses Geist Sans at a much bolder weight/size rather than introducing a brand typeface, since none was supplied.
 
 ---
 
@@ -142,11 +162,12 @@ bg → surface → surface-raised
 | TokenCounter | `src/components/TokenCounter/` | Stable — pill badge in Navbar showing Claude Code tokens since last reset; includes inline reset button |
 | PlayerSignIn | `src/components/PlayerSignIn/` | Stable — two-player Google sign-in gate for the dice game |
 | PlayerBadge | `src/components/PlayerBadge/` | Stable — reusable avatar + display name; used by PlayerSignIn and PlayerScoreCard |
-| GameBoard | `src/components/GameBoard/` | In progress — dice game orchestrator: state, all API calls |
-| GameSetup | `src/components/GameSetup/` | In progress — winning-score form, reused for first game and every reset |
-| NewGameModal | `src/components/NewGameModal/` | In progress — Modal-pattern wrapper around GameSetup for mid-game resets |
-| PlayerScoreCard | `src/components/PlayerScoreCard/` | In progress — per-player scoreboard card (PlayerBadge + score numeral + turn indicator) |
-| DiceFace | `src/components/DiceFace/` | In progress — pip-layout die display |
+| GameBoard | `src/components/GameBoard/` | Stable — dice game orchestrator: state, all API calls |
+| GameSetup | `src/components/GameSetup/` | Stable — winning-score form, reused for first game and every reset |
+| NewGameModal | `src/components/NewGameModal/` | Stable — Modal-pattern wrapper around GameSetup for mid-game resets |
+| PlayerScoreCard | `src/components/PlayerScoreCard/` | Stable — per-player scoreboard card (PlayerBadge + score numeral + turn indicator) |
+| DiceFace | `src/components/DiceFace/` | Stable — pip-layout die display |
+| IbiSecondaryButton | `src/components/IbiSecondaryButton/` | In progress — IBI-brand pill CTA (cyan outline + leading arrow); not yet used on any page |
 
 ---
 
@@ -207,6 +228,29 @@ First established implicitly in `VulnerabilityListButton`'s trigger; formalized 
 | Focus-visible | `outline: 2px solid var(--color-accent)`, `outline-offset: 3px` |
 | Active | `opacity: 0.8` |
 | Disabled | `opacity: 0.5`, `cursor: not-allowed`, `pointer-events: none` |
+
+---
+
+## IBI secondary button pattern (`IbiSecondaryButton`)
+
+A **separate, brand-scoped** pattern from the one above — not a variant of it. Introduced for the IBI refresh, matching a reference mockup's pill CTA exactly. Deliberately kept distinct rather than merged into the pattern above, since the two differ in radius, color source, size, and always-visible-accent-border vs. neutral-until-hover — merging them would have meant changing the existing pattern's look wherever it's already used (e.g. `PlayerSignIn`), which this task explicitly ruled out. The two patterns will coexist until a future task decides to consolidate them on purpose.
+
+| Property | Value |
+|---|---|
+| Background | transparent (composites over any dark background, not tied to one specific surface token) |
+| Border | `1px solid var(--color-ibi-accent)` |
+| Text color | `var(--color-ibi-accent)` |
+| Border radius | `var(--radius-pill)` (100px — reused, not a new radius token) |
+| Padding | `var(--space-3) var(--space-5)` |
+| Icon | `ArrowLeftIcon` (18×18px, `stroke="currentColor"`, `aria-hidden="true"`), leading the label, gap `var(--space-2)` |
+| Font | Geist Sans, 15px, 600 |
+| Min height | 52px |
+| Hover | `background: var(--color-ibi-accent-dim)` |
+| Focus-visible | `outline: 2px solid var(--color-ibi-accent)`, `outline-offset: 3px` |
+| Active | `opacity: 0.8` |
+| Disabled | `opacity: 0.5`, `cursor: not-allowed`, `pointer-events: none` |
+
+Renders as a real `<a>` when given an `href`, otherwise a real `<button>`.
 
 ---
 

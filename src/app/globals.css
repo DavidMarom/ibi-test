@@ -15,6 +15,15 @@
   --color-error-dim: rgba(255, 107, 107, 0.12);
   --radius-pill: 100px;
 
+  /* IBI brand palette — namespaced and parallel to the tokens above, not a replacement.
+     Values eyeballed from reference mockups, no formal brand guide supplied yet. */
+  --color-ibi-navbar: #0d1526;
+  --color-ibi-surface: #12213b;
+  --color-ibi-accent: #35c5e3;
+  --color-ibi-accent-dim: rgba(53, 197, 227, 0.12);
+  --color-ibi-text-primary: #ffffff;
+  --color-ibi-text-muted: #b9c4d3;
+
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 16px;
