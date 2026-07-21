@@ -1,0 +1,60 @@
+.tile {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+@media (min-width: 1024px) {
+  .tile {
+    width: 56px;
+    height: 56px;
+  }
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  width: 70%;
+  height: 70%;
+  place-items: center;
+}
+
+.pip {
+  width: 5px;
+  height: 5px;
+}
+
+.pipActive {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--color-text-primary);
+}
+
+@media (min-width: 1024px) {
+  .pip,
+  .pipActive {
+    width: 6px;
+    height: 6px;
+  }
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

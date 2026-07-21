@@ -1,6 +1,6 @@
 # Task: Dice Game API Endpoints
 
-Status: reviewing
+Status: done
 Track: B
 Track reason: backend/API-only, no UI involvement
 
@@ -74,3 +74,6 @@ A set of authenticated Next.js API routes that fully manage game creation, turn 
 One open item carried forward rather than a gap in this task: the authenticated HTTP path (real Google token → 200 with correct game state) is unverified end-to-end, since no real token exists without `dice-game-auth-ui`. The logic that path depends on (session ownership/turn rules) is independently verified; the auth-verification logic itself was independently verified in task 2. Flagging this as the first thing to smoke-test once sign-in exists, not blocking this task's closure.
 
 Build (`npm run build`) re-run independently and passes; all 4 new routes appear in the route table.
+
+## Completion Summary
+Built the full authenticated game API (`POST/GET /api/game`, `POST /api/game/new`, `POST /api/game/roll`, `POST /api/game/hold`) wiring the rules engine and auth helper together via a single in-memory active-game session keyed by uid, enforcing turn ownership and game-finished state server-side. Response shape is uid-keyed so the frontend never needs the internal player1/player2 concept. Verified via an independent session-layer test script and re-tested 401 gating on all 5 endpoints; the real authenticated HTTP path remains to be smoke-tested once sign-in exists (task 4). User confirmed. Closed 2026-07-21.

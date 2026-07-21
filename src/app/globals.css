@@ -11,6 +11,8 @@
   --color-discord: #5865F2;
   --color-discord-hover: #4752c4;
   --color-accent-border: rgba(79, 142, 247, 0.25);
+  --color-error: #ff6b6b;
+  --color-error-dim: rgba(255, 107, 107, 0.12);
   --radius-pill: 100px;
 
   --space-1: 4px;

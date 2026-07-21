@@ -1,15 +1,15 @@
 # Goal: Dice Game (2-player, backend-enforced rules, Google auth)
 
-Status: in progress
+Status: done
 
 Full-stack dice game per take-home assignment: backend owns all game rules/state, React frontend only displays state and calls the API. Google Sign-In (Firebase) authenticates both players, simulated on one page/browser.
 
 ## Tasks
 - [x] .claude/tasks/dice-game-engine.done.md
 - [x] .claude/tasks/dice-game-auth-backend.done.md
-- [ ] .claude/tasks/dice-game-api.md
-- [ ] .claude/tasks/dice-game-auth-ui.md
-- [ ] .claude/tasks/dice-game-board-ui.md
+- [x] .claude/tasks/dice-game-api.done.md
+- [x] .claude/tasks/dice-game-auth-ui.done.md
+- [x] .claude/tasks/dice-game-board-ui.done.md
 
 ## Plan
 1. **dice-game-engine** — pure rules module, no dependencies. Needed first so every other piece enforces the same rule logic instead of reimplementing it.

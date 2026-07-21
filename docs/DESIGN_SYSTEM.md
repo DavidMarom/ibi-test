@@ -23,6 +23,8 @@ Defined in `src/app/globals.css` as CSS custom properties.
 | `--color-discord` | `#5865F2` | Discord brand CTA background — purposefully off-palette to signal "leaves the app" |
 | `--color-discord-hover` | `#4752c4` | Discord CTA hover state |
 | `--color-accent-border` | `rgba(79, 142, 247, 0.25)` | Border on accent-tinted elements (e.g. token counter pill) — more visible than `--color-accent-dim` bg alone |
+| `--color-error` | `#ff6b6b` | Inline error/failure text (e.g. failed sign-in) — first error token in the system |
+| `--color-error-dim` | `rgba(255, 107, 107, 0.12)` | Reserved for subtle error backgrounds, parallels `--color-accent-dim` |
 
 **Theme:** dark only (`color-scheme: dark` on `html`).
 
@@ -58,6 +60,9 @@ Fonts loaded via Next.js font system (`var(--font-geist-sans)`, `var(--font-geis
 | Card description (mobile) | Geist Sans | 14px | 400 | 1.6 |
 | Card description (desktop) | Geist Sans | 15px | 400 | 1.6 |
 | Footer / captions | Geist Sans | 13px | 400 | 1.5 |
+| Score numeral | Geist Mono | 28px | 700 | — |
+
+Score numeral is fixed at 28px across every breakpoint (a compact number doesn't need responsive scaling) — first numeral-emphasis role in the system; Mono was chosen to match "Logo / code labels" for a scoreboard-like character distinct from body/heading text.
 
 ---
 
@@ -71,7 +76,13 @@ Mobile-first. All components start at mobile and layer up.
 | tablet | 768px | Navbar grows to 64px; padding shifts to `--space-4` |
 | desktop | 1024px | Typography scales up; grid columns increase |
 
-Max content width: **1080px**, centered with `margin: 0 auto`.
+Max content width: **1080px**, centered with `margin: 0 auto` — for marketing/content pages (homepage, skills).
+
+Compact app-screen container widths (auth/interactive screens, not marketing content):
+- **420px** — single-card screens (e.g. sign-in)
+- **640px** — screens with a two-column layout at tablet+ (e.g. the dice game board's two-player scoreboard)
+
+Both centered the same way; pick whichever fits the content, don't stretch a single-card screen to 640px or squeeze a two-column layout into 420px.
 
 ---
 
@@ -129,6 +140,13 @@ bg → surface → surface-raised
 | DiscordBanner | `src/components/DiscordBanner/` | Planned — community invite strip between Personas and Footer |
 | VulnerabilityListButton | `src/components/VulnerabilityListButton/` | Planned — trigger button + modal for Nehemiah's 24 vulnerability classes |
 | TokenCounter | `src/components/TokenCounter/` | Stable — pill badge in Navbar showing Claude Code tokens since last reset; includes inline reset button |
+| PlayerSignIn | `src/components/PlayerSignIn/` | Stable — two-player Google sign-in gate for the dice game |
+| PlayerBadge | `src/components/PlayerBadge/` | Stable — reusable avatar + display name; used by PlayerSignIn and PlayerScoreCard |
+| GameBoard | `src/components/GameBoard/` | In progress — dice game orchestrator: state, all API calls |
+| GameSetup | `src/components/GameSetup/` | In progress — winning-score form, reused for first game and every reset |
+| NewGameModal | `src/components/NewGameModal/` | In progress — Modal-pattern wrapper around GameSetup for mid-game resets |
+| PlayerScoreCard | `src/components/PlayerScoreCard/` | In progress — per-player scoreboard card (PlayerBadge + score numeral + turn indicator) |
+| DiceFace | `src/components/DiceFace/` | In progress — pip-layout die display |
 
 ---
 
@@ -169,6 +187,93 @@ First established for the Nehemiah vulnerability list popup. Use for all future 
 | z-index | `100` | Above all page content |
 
 **ARIA contract:** `role="dialog"`, `aria-modal="true"`, `aria-labelledby` → modal title id. Focus moves to close button on open; returns to trigger on close. `Escape` closes.
+
+---
+
+## Secondary (outline) button pattern
+
+First established implicitly in `VulnerabilityListButton`'s trigger; formalized here as *the* pattern for outline-style action buttons (e.g. "Sign in with Google") so future components reuse it instead of drifting.
+
+| Property | Value |
+|---|---|
+| Background | transparent |
+| Border | `1px solid var(--color-border)` |
+| Text color | `var(--color-accent)` |
+| Border radius | 8px |
+| Padding | `var(--space-2) var(--space-3)` |
+| Font | Geist Sans, 13px, 500 |
+| Min height | 44px |
+| Hover | `background: var(--color-accent-dim)`, `border-color: rgba(79,142,247,0.3)` |
+| Focus-visible | `outline: 2px solid var(--color-accent)`, `outline-offset: 3px` |
+| Active | `opacity: 0.8` |
+| Disabled | `opacity: 0.5`, `cursor: not-allowed`, `pointer-events: none` |
+
+---
+
+## Primary (filled) button pattern
+
+First filled/CTA button in the system, established for the dice game's "Start Game" action.
+
+| Property | Value |
+|---|---|
+| Background | `var(--color-accent)` |
+| Text color | `var(--color-bg)` — **not white**; see rationale below |
+| Border | none |
+| Border radius | 8px |
+| Padding | `var(--space-3) var(--space-4)` |
+| Font | Geist Sans, 15px, 600 |
+| Min height | 44px |
+| Hover | `background: var(--color-accent-hover)` |
+| Focus-visible | `outline: 2px solid var(--color-accent)`, `outline-offset: 3px` |
+| Disabled | `background: var(--color-surface-raised)`, `color: var(--color-text-secondary)`, `cursor: not-allowed` |
+
+**Text color rationale:** `--color-accent` (#4f8ef7) is a mid-brightness blue — white text on it sits close to the AA contrast floor for normal-weight text. Near-black text (`--color-bg`) on that same blue gives a much larger, safely-AA contrast margin. All future filled buttons on `--color-accent` should use `--color-bg` text, not white.
+
+---
+
+## Input field pattern
+
+First form input in the system, established for the dice game's winning-score entry.
+
+| Property | Value |
+|---|---|
+| Background | `var(--color-surface-raised)` |
+| Border | `1px solid var(--color-border)` |
+| Border radius | 8px |
+| Padding | `var(--space-2) var(--space-3)` |
+| Font | Geist Sans, 14px, 400 |
+| Text color | `var(--color-text-primary)` |
+| Min height | 44px |
+| Focus-visible | `outline: 2px solid var(--color-accent)`, `outline-offset: 3px` |
+| Label | Always a real `<label htmlFor>` above the input (Footer/caption role) — never placeholder-only |
+
+---
+
+## Loading spinner pattern
+
+First used inline (undocumented) in `PlayerSignIn`'s sign-in button; formalized after a second use (the dice game's Roll/Hold buttons) confirmed it as a real pattern, not a one-off.
+
+| Property | Value |
+|---|---|
+| Size | 14×14px |
+| Shape | circular, `border: 2px solid rgba(79,142,247,0.25)`, `border-top-color: var(--color-accent)` |
+| Animation | `rotate(360deg)`, 700ms linear infinite |
+| Reduced motion | `animation: none` under `prefers-reduced-motion: reduce` — pair with a text label (e.g. "Rolling…") so status is conveyed without motion |
+| Usage | Replaces a button's icon while its action is in flight; button `disabled` for the duration |
+
+---
+
+## Dice face (pip layout) pattern
+
+Established for the dice game board.
+
+| Property | Value |
+|---|---|
+| Tile | square, `background: var(--color-surface-raised)`, `border: 1px solid var(--color-border)`, `border-radius: 8px` |
+| Pip color | `var(--color-text-primary)` |
+| Pip layout | standard six-sided die convention: 1 = center; 2 = opposite corners; 3 = diagonal + center; 4 = four corners; 5 = four corners + center; 6 = two columns of three |
+| Empty state | no roll yet (`value` unset) — tile with no pips, `border-color: var(--color-border)`, doesn't imply any value |
+| Accessible name | visually-hidden text "Die: {value}" per tile; pips themselves `aria-hidden` |
 
 ---
 
