@@ -1,6 +1,6 @@
 # Task: Sound effects for key gameplay moments
 
-Status: reviewing
+Status: done
 Track: A
 Track reason: Introduces a new interactive element (a mute toggle button, with a new icon) that doesn't have a documented pattern in `docs/DESIGN_SYSTEM.md` yet — the closest existing analog (`TokenCounter`'s inline reset button, nested inside a pill) isn't quite the same shape as a standalone toggle, so this needs a Design Brief to place and style it consistently rather than improvising.
 
@@ -104,3 +104,6 @@ Short, distinct sound effects play for rolling, holding, busting, and winning �
 - [x] Build/typecheck — `npm run build` passes cleanly, re-run independently
 
 Actual audio output (whether the four tones sound good/distinct/pleasant) remains unverified — genuinely can't be checked from here, same category as the bust-pause task's live-browser gap. Recommend the user do a quick manual listen before treating this as fully done.
+
+## Completion Summary
+Added procedurally-generated sound effects (roll, hold, bust, win — synthesized via the Web Audio API, no audio files or new dependencies) and a persistent, viewport-fixed mute toggle visible on every screen of the app. Caught and fixed a real placement bug during implementation (the original design missed the sign-in screen, which is a separate top-level view from the game board). Verified at the code level and via direct interaction testing (mute plumbing); user confirmed the actual sounds work via manual listen. Closed 2026-07-21.
