@@ -32,7 +32,9 @@ export async function verifyIdToken(token: string): Promise<TokenVerifyResult> {
       issuer: `${FIREBASE_ISSUER_PREFIX}${projectId}`,
       audience: projectId,
     }));
-  } catch {
+  } catch (err) {
+    const reason = err instanceof Error ? `${err.name}: ${err.message}` : String(err);
+    console.error(`ID token verification failed (issuer=${FIREBASE_ISSUER_PREFIX}${projectId}, audience=${projectId}): ${reason}`);
     return { ok: false, message: "Invalid or expired token." };
   }
 
