@@ -1,6 +1,6 @@
 # Task: Write a public-facing README.md
 
-Status: reviewing
+Status: done
 Track: B
 Track reason: Copy/content change — a documentation file, no app UI or visual pattern involved.
 
@@ -59,3 +59,6 @@ A visitor landing on the public GitHub repo can, from the README alone, understa
 - [x] No LICENSE section or file — confirmed absent, no `LICENSE` file created
 - [x] `PRODUCT_KNOWLEDGE.md` untouched — confirmed via `git diff --stat PRODUCT_KNOWLEDGE.md` (empty diff)
 - [x] Build still passes — confirmed via independent `npm run build` re-run, completed successfully
+
+## Completion Summary
+Rewrote `README.md` into a full public-facing readme covering the real app (rules, features, tech stack) and a working Getting Started guide with only the actually-used env vars (placeholders only, no secrets). All content verified against source code before writing. User moved on to the next request without objection, taken as confirmation; closed 2026-07-22.
