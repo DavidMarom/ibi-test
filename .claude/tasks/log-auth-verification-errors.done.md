@@ -1,6 +1,6 @@
 # Task: Log the real cause of ID token verification failures
 
-Status: reviewing
+Status: done
 Track: B
 Track reason: Bug fix / observability — no user-facing behavior or visual change, just server-side logging.
 
@@ -42,3 +42,6 @@ The next time ID token verification fails in production, the actual `jose` error
 - [x] Change scoped to the one catch block, no other refactoring — confirmed via reading the full file: only lines 35-38 differ from before, rest of `verifyRequest.ts` untouched
 - [x] No new dependencies — confirmed `package.json` unchanged, only `jose`'s existing `Error` shape and plain `console.error` used
 - [x] Build passes — confirmed via independent `npm run build` re-run, completed successfully, all 9 routes generated
+
+## Completion Summary
+Added server-side logging to `verifyIdToken`'s catch block in `src/lib/auth/verifyRequest.ts` so the real cause of any ID-token verification failure (expired token, wrong audience/issuer, malformed token) now appears in Vercel's function logs, without changing the generic message the client sees. Verified via build and an independent smoke test showing the log line firing correctly for a malformed token. Confirmed done by the user on 2026-07-22.

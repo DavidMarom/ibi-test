@@ -8,6 +8,8 @@ A two-player push-your-luck dice game, built with Next.js. Roll and bank points 
 ![Firebase](https://img.shields.io/badge/Firebase-Auth-FFCA28?logo=firebase&logoColor=black)
 ![MongoDB](https://img.shields.io/badge/MongoDB-7-47A248?logo=mongodb&logoColor=white)
 
+**🔗 [Live demo](https://ibi-test.vercel.app/)**
+
 ## Features
 
 - 🎲 **Push-your-luck dice game** — roll to accumulate a round score, hold to bank it, but two 6s in a single roll wipes the round back to zero
